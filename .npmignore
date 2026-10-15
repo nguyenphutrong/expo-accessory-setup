@@ -13,3 +13,5 @@ __tests__
 /android/src/test/
 /android/build/
 /example/
+/plugin/jest.config.js
+/plugin/__tests__/

@@ -7,7 +7,7 @@
   "scripts": {
     "build": "node internal/module_scripts/build.js",
     "clean": "node internal/module_scripts/clean.js",
-    "lint": "eslint src/",
+    "lint": "eslint src/ plugin/src/ plugin/__tests__/ mocks/",
     "test": "node internal/module_scripts/test.js",
     "prepare": "node internal/module_scripts/prepare.js",
     "open:ios": "node internal/module_scripts/open-ios.js",
@@ -17,7 +17,10 @@
     "react-native",
     "expo",
     "expo-accessory-setup",
-    "ExpoAccessorySetup"
+    "accessorysetupkit",
+    "companion-device-manager",
+    "bluetooth",
+    "ble"
   ],
   "repository": "https://github.com/nguyenphutrong/expo-accessory-setup",
   "bugs": {
@@ -45,14 +48,20 @@
     "typescript": "^5.9.2"
   },
   "jest": {
-    "preset": "jest-expo",
-    "roots": [
-      "<rootDir>/src"
+    "projects": [
+      {
+        "displayName": "module",
+        "preset": "jest-expo",
+        "roots": [
+          "<rootDir>/src"
+        ]
+      },
+      "<rootDir>/plugin/jest.config.js"
     ]
   },
   "peerDependencies": {
     "expo": "*",
-    "react": "*",
+    "react": "19.2.3",
     "react-native": "*"
   }
 }

@@ -22,6 +22,24 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "../app.plugin.js",
+        {
+          "ios": {
+            "bluetoothServices": [
+              "180D"
+            ],
+            "bluetoothNames": [
+              "Polar"
+            ],
+            "bluetoothCompanyIdentifiers": [
+              107
+            ]
+          }
+        }
+      ]
+    ]
   }
 }

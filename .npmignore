@@ -15,3 +15,7 @@ __tests__
 /example/
 /plugin/jest.config.js
 /plugin/__tests__/
+/bun.lock
+/.prettierrc
+/eslint.config.cjs
+/plugin/tsconfig.tsbuildinfo

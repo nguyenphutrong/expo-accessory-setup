@@ -162,7 +162,8 @@ final class AccessorySessionController {
     case .activated:
       finishActivation(.success(()))
     case .invalidated:
-      let error = AccessorySetupException(.unknown, "The accessory session was invalidated.", cause: event.error)
+      let reason = event.error.map { " \($0.localizedDescription)" } ?? ""
+      let error = AccessorySetupException(.unknown, "The accessory session was invalidated.\(reason)", cause: event.error)
       finishActivation(.failure(error))
       finishPicker(.failure(error))
       // An invalidated session can't be activated again.

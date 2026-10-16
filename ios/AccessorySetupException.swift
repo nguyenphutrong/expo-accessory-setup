@@ -31,11 +31,6 @@ final class AccessorySetupException: Exception, @unchecked Sendable {
     detail
   }
 
-  // Keeps Swift file and line numbers out of the JavaScript error message.
-  var message: String {
-    detail
-  }
-
   @available(iOS 18.0, *)
   static func from(_ error: Error) -> AccessorySetupException {
     if let error = error as? AccessorySetupException {

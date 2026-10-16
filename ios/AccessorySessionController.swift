@@ -45,6 +45,24 @@ final class AccessorySessionController {
     self.emit = emit
   }
 
+  /// `ASAccessorySession()` terminates the app when an `NSAccessorySetupBluetooth*` key is present
+  /// with no values, so this rejects that Info.plist before a session is created.
+  static func validateInfoPlist() throws {
+    let info = Bundle.main.infoDictionary ?? [:]
+    let keys = [
+      "NSAccessorySetupBluetoothServices", "NSAccessorySetupBluetoothNames",
+      "NSAccessorySetupBluetoothCompanyIdentifiers",
+    ]
+    for key in keys {
+      if let values = info[key] as? [Any], values.isEmpty {
+        throw AccessorySetupException(
+          .invalidOptions,
+          "Info.plist key \(key) has no values. Remove the key, or rebuild with the config plugin, which leaves out unused keys."
+        )
+      }
+    }
+  }
+
   func invalidate() {
     session.invalidate()
   }

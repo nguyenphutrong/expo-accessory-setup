@@ -53,10 +53,11 @@ public final class ExpoAccessorySetupModule: Module, @unchecked Sendable {
 
   @available(iOS 18.0, *)
   @MainActor
-  private func controller() -> AccessorySessionController {
+  private func controller() throws -> AccessorySessionController {
     if let controller = sessionController as? AccessorySessionController {
       return controller
     }
+    try AccessorySessionController.validateInfoPlist()
     let controller = AccessorySessionController { [weak self] name, accessory in
       self?.sendEvent(name.rawValue, ["accessory": accessory.toDictionary()])
     }

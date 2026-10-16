@@ -5,7 +5,8 @@
   "dependencies": {
     "expo": "~57.0.30",
     "react": "19.2.3",
-    "react-native": "0.86.3"
+    "react-native": "0.86.3",
+    "react-native-ble-plx": "^3.5.1"
   },
   "devDependencies": {
     "@types/react": "~19.2.2",

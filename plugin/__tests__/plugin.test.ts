@@ -81,7 +81,7 @@ describe('parseOptions', () => {
 });
 
 describe('setAccessorySetupInfoPlist', () => {
-  it('writes every AccessorySetupKit key', () => {
+  it('writes the configured AccessorySetupKit keys and leaves out empty ones', () => {
     const plist = setAccessorySetupInfoPlist(
       {},
       parseOptions({ ios: { bluetoothCompanyIdentifiers: [76], bluetoothNames: ['Acme'] } })
@@ -89,10 +89,18 @@ describe('setAccessorySetupInfoPlist', () => {
 
     expect(plist).toEqual({
       NSAccessorySetupKitSupports: ['Bluetooth'],
-      NSAccessorySetupBluetoothServices: [],
       NSAccessorySetupBluetoothNames: ['Acme'],
       NSAccessorySetupBluetoothCompanyIdentifiers: ['004C'],
     });
+  });
+
+  it('removes a key whose values were removed from the config', () => {
+    const plist = setAccessorySetupInfoPlist(
+      { NSAccessorySetupBluetoothNames: [] },
+      parseOptions({ ios: { bluetoothServices: ['180D'] } })
+    );
+
+    expect(plist).not.toHaveProperty('NSAccessorySetupBluetoothNames');
   });
 
   it('keeps existing supported technologies and unrelated keys', () => {

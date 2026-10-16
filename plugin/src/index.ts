@@ -26,19 +26,29 @@ export function setAccessorySetupInfoPlist(
   const supports = Array.isArray(infoPlist.NSAccessorySetupKitSupports)
     ? (infoPlist.NSAccessorySetupKitSupports as string[])
     : [];
-  return {
+  const result: InfoPlist = {
     ...infoPlist,
     NSAccessorySetupKitSupports: supports.includes('Bluetooth')
       ? supports
       : [...supports, 'Bluetooth'],
-    // Apple asks for all three keys whenever NSAccessorySetupKitSupports contains Bluetooth.
-    // TODO(verify): that an empty array is accepted for an unused key.
+  };
+  // ASAccessorySession terminates the app when one of these keys is present with no values,
+  // so unused keys are left out instead of written as empty arrays.
+  const keys = {
     NSAccessorySetupBluetoothServices: ios.bluetoothServices,
     NSAccessorySetupBluetoothNames: ios.bluetoothNames,
     // TODO(verify): Apple documents these as "two-byte UUID" strings without a format example.
     // Four hex digits ("004C") is the assumed format.
     NSAccessorySetupBluetoothCompanyIdentifiers: ios.bluetoothCompanyIdentifiers,
   };
+  for (const [key, values] of Object.entries(keys)) {
+    if (values.length > 0) {
+      result[key] = values;
+    } else {
+      delete result[key];
+    }
+  }
+  return result;
 }
 
 const COMPANION_DEVICE_SETUP_FEATURE = 'android.software.companion_device_setup';

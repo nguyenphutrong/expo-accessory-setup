@@ -16,3 +16,9 @@ android {
     abortOnError false
   }
 }
+
+dependencies {
+  // IntentSenderRequest and StartIntentSenderForResult, for launching the association dialog
+  // through Expo's activity result registry. React Native already brings this in at runtime.
+  implementation "androidx.activity:activity:1.8.0"
+}

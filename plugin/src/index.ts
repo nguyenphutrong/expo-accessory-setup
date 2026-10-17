@@ -62,12 +62,19 @@ function ensureUsesFeature(manifest: AndroidManifest, name: string) {
   }
 }
 
+// Expo's manifest types leave out android:maxSdkVersion, which the manifest XML accepts.
+type UsesPermission = { $: { 'android:name': string; 'android:maxSdkVersion'?: string } };
+
 function ensureLegacyPermission(manifest: AndroidManifest, name: string) {
   manifest.manifest['uses-permission'] ??= [];
-  const permissions = manifest.manifest['uses-permission'];
-  if (!permissions.some((permission) => permission.$['android:name'] === name)) {
-    const permission = { $: { 'android:name': name, 'android:maxSdkVersion': '30' } };
-    permissions.push(permission);
+  const permissions: UsesPermission[] = manifest.manifest['uses-permission'];
+  const existing = permissions.find((permission) => permission.$['android:name'] === name);
+  // Android 12 ignores these permissions, so the limit also applies when another plugin, such as
+  // react-native-ble-plx, declared them first.
+  if (existing) {
+    existing.$['android:maxSdkVersion'] ??= '30';
+  } else {
+    permissions.push({ $: { 'android:name': name, 'android:maxSdkVersion': '30' } });
   }
 }
 

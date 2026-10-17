@@ -261,7 +261,8 @@ This affects ble-plx in three ways:
 bun install
 bun run test        # Jest: TypeScript API and config plugin
 bun run lint
-bun run build       # TypeScript and the config plugin
+bun run build       # TypeScript API
+bun run build plugin  # config plugin, used by the example's prebuild
 cd example && bunx expo run:ios
 ```
 

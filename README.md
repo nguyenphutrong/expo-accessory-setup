@@ -12,7 +12,7 @@ The module shows the system's own pairing UI, lists the accessories your app has
 | iOS | AccessorySetupKit | iOS 18 or later |
 | Android | CompanionDeviceManager | Android 8.0 (API 26) or later, with the `android.software.companion_device_setup` feature |
 
-The module needs a [development build](https://docs.expo.dev/develop/development-builds/introduction/). It does not work in Expo Go.
+The module needs a [development build](https://docs.expo.dev/develop/development-builds/introduction/). It does not work in Expo Go. It is built and tested with Expo SDK 58.
 
 ## Installation
 
@@ -229,6 +229,7 @@ This affects ble-plx in three ways:
 - **One display item per picker on iOS.** `showPicker()` presents a single product.
 - **No migration of existing pairings on iOS.** Accessories that your app paired through CoreBluetooth before adopting AccessorySetupKit don't appear in `getPairedAccessories()`. AccessorySetupKit supports migration through `ASMigrationDisplayItem`, but this module does not use it.
 - **No self-managed or profile-based associations on Android.** Watch, glasses, and other device profiles need extra permissions and roles that the module doesn't request.
+- **Audio accessories may not appear in the iOS picker.** On iOS 27, AccessorySetupKit never offered a pair of Sony WH-1000XM6 headphones, even though their advertisement matched the filter. iOS logged no reason. Test with the accessory you target.
 - **Picker filters must match the plugin config on iOS.** Changing a filter value requires a native rebuild.
 - **Unverified details.** These are assumptions in the current implementation. Each one is marked with `TODO(verify)` in the source:
   - Apple doesn't document the string format for `NSAccessorySetupBluetoothCompanyIdentifiers`. The plugin writes four hex digits (`"004C"`).
@@ -244,7 +245,7 @@ This affects ble-plx in three ways:
 
 **`INVALID_OPTIONS: Info.plist key … has no values`.** An `NSAccessorySetupBluetooth*` key is present with an empty array, which makes AccessorySetupKit terminate the app. Remove the key, or let the config plugin write Info.plist with `bunx expo prebuild --clean`.
 
-**The iOS picker shows no devices.** Check that the accessory advertises the filtered service UUID or company identifier. With `range: 'immediate'`, hold the device next to the accessory.
+**The iOS picker shows no devices.** Check that the accessory advertises the filtered service UUID or company identifier. Some accessories, such as Bluetooth headphones, don't appear even when they match. See [Limitations](#limitations). With `range: 'immediate'`, hold the device next to the accessory.
 
 **`PERMISSION_DENIED` on iOS.** The picker only shows while the app is in the foreground. Call `showPicker()` from a user action, such as a button press.
 

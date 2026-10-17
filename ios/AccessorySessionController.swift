@@ -282,7 +282,8 @@ final class AccessorySessionController {
         return image
       }
     } catch {
-      throw AccessorySetupException(.invalidOptions, "ios.productImage could not be loaded from \(uri).", cause: error)
+      throw AccessorySetupException(
+        .invalidOptions, "ios.productImage could not be loaded from \(uri): \(error.localizedDescription)", cause: error)
     }
     throw AccessorySetupException(.invalidOptions, "ios.productImage at \(uri) is not a supported image.")
   }

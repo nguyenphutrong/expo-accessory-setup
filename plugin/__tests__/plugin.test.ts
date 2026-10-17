@@ -172,6 +172,25 @@ describe('setAccessorySetupManifest', () => {
     expect(names).toEqual([...new Set(names)]);
     expect(manifest.manifest['uses-feature']).toHaveLength(1);
   });
+
+  it('limits legacy permissions that another plugin added, keeping an existing limit', () => {
+    const manifest = emptyManifest();
+    manifest.manifest['uses-permission'] = [
+      { $: { 'android:name': 'android.permission.BLUETOOTH' } },
+      {
+        $: { 'android:name': 'android.permission.BLUETOOTH_ADMIN', 'android:maxSdkVersion': '28' },
+      },
+    ] as AndroidManifest['manifest']['uses-permission'];
+
+    setAccessorySetupManifest(manifest, parseOptions(minimal));
+
+    expect(permissions(manifest)).toEqual(
+      expect.arrayContaining([
+        { 'android:name': 'android.permission.BLUETOOTH', 'android:maxSdkVersion': '30' },
+        { 'android:name': 'android.permission.BLUETOOTH_ADMIN', 'android:maxSdkVersion': '28' },
+      ])
+    );
+  });
 });
 
 describe('withAccessorySetup', () => {

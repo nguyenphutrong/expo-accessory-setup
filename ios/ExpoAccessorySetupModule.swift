@@ -11,10 +11,10 @@ public final class ExpoAccessorySetupModule: Module, @unchecked Sendable {
     Events(AccessoryEventName.added.rawValue, AccessoryEventName.removed.rawValue, AccessoryEventName.changed.rawValue)
 
     Function("isSupported") { () -> Bool in
-      if #available(iOS 18.0, *) {
-        return true
+      guard #available(iOS 18.0, *) else {
+        return false
       }
-      return false
+      return AccessorySessionController.infoPlistDeclaresBluetooth
     }
 
     AsyncFunction("showPicker") { (options: PickerOptions) async throws -> PairedAccessoryRecord in

@@ -8,6 +8,8 @@
 
 ### 🐛 Bug fixes
 
+- On iOS, `isSupported()` returns `false` and every call rejects with `UNSUPPORTED` when Info.plist doesn't declare `Bluetooth` in `NSAccessorySetupKitSupports`, instead of AccessorySetupKit terminating the app in `ASAccessorySession.init`. This happens when the native project was generated without the config plugin; run `expo prebuild --clean` and rebuild.
+
 ### 💡 Others
 
 ## 0.1.0

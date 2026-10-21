@@ -112,7 +112,7 @@ The [example app](./example/App.tsx) shows the whole flow. It pairs an accessory
 
 ### `isSupported(): boolean`
 
-Returns `true` on iOS 18 or later, and on Android devices with the companion device setup feature on API 26 or later. Returns `false` in Expo Go, on web, and on older systems. When it returns `false`, every other function rejects with `UNSUPPORTED`.
+Returns `true` on iOS 18 or later when the app's Info.plist declares `Bluetooth` in `NSAccessorySetupKitSupports` (the config plugin writes it), and on Android devices with the companion device setup feature on API 26 or later. Returns `false` in Expo Go, on web, on older systems, and in an iOS build whose native project was generated without the config plugin. When it returns `false`, every other function rejects with `UNSUPPORTED`.
 
 ### `showPicker(options: ShowPickerOptions): Promise<PairedAccessory>`
 
@@ -238,6 +238,8 @@ This affects ble-plx in three ways:
 ## Troubleshooting
 
 **`UNSUPPORTED` in Expo Go.** Expo Go doesn't include this module. Build a development build with `bunx expo run:ios` or `bunx expo run:android`.
+
+**`isSupported()` is `false` on iOS 18+, or the app crashes in `-[ASAccessorySession init]`, after adding the module.** The native project was built without the config plugin, so Info.plist has no `NSAccessorySetupKitSupports` key. AccessorySetupKit terminates the app when that key is missing, so the module reports `UNSUPPORTED` instead of creating a session. Run `bunx expo prebuild --clean` and rebuild the app. `bunx expo run:ios` reuses an existing `ios/` folder, so adding the plugin to `app.json` alone doesn't update Info.plist.
 
 **`INVALID_OPTIONS: filter.serviceUUID … is not listed in NSAccessorySetupBluetoothServices`.** Add the value to the plugin's `ios.bluetoothServices`, run `bunx expo prebuild --clean`, and rebuild the app.
 

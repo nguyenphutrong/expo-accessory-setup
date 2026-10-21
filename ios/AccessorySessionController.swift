@@ -45,9 +45,23 @@ final class AccessorySessionController {
     self.emit = emit
   }
 
-  /// `ASAccessorySession()` terminates the app when an `NSAccessorySetupBluetooth*` key is present
-  /// with no values, so this rejects that Info.plist before a session is created.
+  /// Whether `NSAccessorySetupKitSupports` declares `Bluetooth`. `ASAccessorySession()` terminates
+  /// the app when the key declares no transport, and this module's picker filters need `Bluetooth`.
+  nonisolated static var infoPlistDeclaresBluetooth: Bool {
+    let supports = Bundle.main.infoDictionary?["NSAccessorySetupKitSupports"] as? [String] ?? []
+    return supports.contains("Bluetooth")
+  }
+
+  /// `ASAccessorySession()` terminates the app when `NSAccessorySetupKitSupports` is missing or
+  /// when an `NSAccessorySetupBluetooth*` key is present with no values, so this rejects those
+  /// Info.plists before a session is created.
   static func validateInfoPlist() throws {
+    guard infoPlistDeclaresBluetooth else {
+      throw AccessorySetupException(
+        .unsupported,
+        "Info.plist key NSAccessorySetupKitSupports does not include Bluetooth. Run `npx expo prebuild --clean` and rebuild so the config plugin writes the AccessorySetupKit keys."
+      )
+    }
     let info = Bundle.main.infoDictionary ?? [:]
     let keys = [
       "NSAccessorySetupBluetoothServices", "NSAccessorySetupBluetoothNames",

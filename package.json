@@ -1,6 +1,6 @@
 {
   "name": "expo-accessory-setup",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "System accessory pairing for Expo: AccessorySetupKit on iOS, CompanionDeviceManager on Android",
   "main": "build/index.js",
   "types": "build/index.d.ts",
